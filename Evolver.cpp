@@ -3,7 +3,6 @@
 
 Evolver::Evolver()
 {
-
 }
 
 Gene &Evolver::getGene(unsigned int index)
@@ -32,15 +31,15 @@ void Evolver::evolve(unsigned int iteration)
       std::cout << "Best score is " << _best.getScore() << " (" << GREEN << "+" << increase << RESET << ")." << std::endl;
     }
   else
-    std::cout << "Best score is " << _best.getScore() << " (last increase " << lastIncrease << " turns ago)." << std::endl;
+      std::cout << "Best score is " << _best.getScore() << " (last increase " << lastIncrease << " turns ago)." << std::endl;
+
+  _genes[1] = _best;
+  _genes[1].mute(_genes[0]); // Do a crossover between best two
 
   _genes[0] = _best;
   _genes[0].mute(5); // Mute a bit the best one
 
-  _genes[2] = _best;
-  _genes[2].mute(_genes[1]); // Do a crossover between best two
-
-  _genes[1].mute(10); // Keep muting second best one
+  _genes[2].mute(10); // Keep muting second best one
 
   _genes[3] = _best; // Mute a third of best one
   _genes[3].mute(35);

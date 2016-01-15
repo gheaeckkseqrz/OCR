@@ -52,7 +52,7 @@ void Manager::train(Network &n, Gene &g)
   std::vector<unsigned int> output(255);
 
   n.load(g);
-  for (char c('A') ; c <= 'Z' ; ++c)
+  for (char c('A') ; c <= 'B' ; ++c)
     {
       fullResults.push_back(0);
       bitResults.push_back(0);

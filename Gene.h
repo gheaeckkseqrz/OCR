@@ -6,8 +6,9 @@
 class Gene
 {
  public:
-  Gene();
+  Gene(std::string const &filename = "");
 
+  void loadFromFile(std::string const &path);
   void clear();
   void addWeight(float w);
   float getWeight(unsigned int index) const;
@@ -23,8 +24,9 @@ class Gene
 
   void saveToFile(std::string const &path);
 
- private:
   std::vector<float> _weights;
+
+ private:
   std::vector<unsigned int> _fullResults;
   std::vector<unsigned int> _bitResults;
   std::vector<unsigned int> _output;

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include "Network.h"
 #include "InputNeuron.h"
 #include "Gene.h"
@@ -64,6 +65,12 @@ unsigned char Network::getOutput()
       std::cerr << "Last layer should be 8 neurons, not " << _neurons.back().size() << std::endl;
       return 0;
     }
+
+  std::thread threads[8];
+  for (int i(0) ; i < 8 ; ++i)
+    threads[i] = std::thread(&Neuron::getOutput, _neurons.back()[i]);
+  for (int i(0) ; i < 8 ; ++i)
+    threads[i].join();
 
   for (auto n : _neurons.back())
     {

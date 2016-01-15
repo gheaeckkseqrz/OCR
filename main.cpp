@@ -13,7 +13,7 @@ int main(int ac, char **av)
   Evolver e;
   for (unsigned int i(0) ; i < 5 ; ++i)
     {
-      n.save(e.getGene(i));
+      e.getGene(i).loadFromFile("weights.txt");
       //      e.getGene(i).mute(100);
     }
 

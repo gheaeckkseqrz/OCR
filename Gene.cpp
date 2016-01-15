@@ -4,9 +4,24 @@
 #include <cstdlib>
 #include "Gene.h"
 
-Gene::Gene()
+Gene::Gene(std::string const &path)
 {
-  
+  if (!path.empty())
+    loadFromFile(path);
+}
+
+void Gene::loadFromFile(std::string const &path)
+{
+  std::ifstream t(path);
+  if (t.is_open())
+    {
+      float w(0);
+      while (t >> w)
+	_weights.push_back(w);
+      std::cout << "Loaded " << _weights.size() << " from " << path << std::endl;
+    }
+  else
+    std::cerr << "Failled to open " << path << std::endl;
 }
 
 void Gene::clear()
@@ -34,7 +49,7 @@ void Gene::mute(unsigned int probability)
 {
   for (unsigned int i(0) ; i < _weights.size() ; ++i)
     if (rand() % 100 < probability)
-      _weights[i] = (rand() % 3) - 1;
+      _weights[i] = (float)((rand() % 2001) - 1000) / 1000;
 }
 
 void Gene::mute(Gene const &model, unsigned int probability)
@@ -67,7 +82,7 @@ std::string Gene::printResults(bool color) const
   const char *RESET = "\033[0;00m";
 
   std::stringstream ss;
-  for (char c('A') ; c <= 'Z' ; ++c)
+  for (char c('A') ; c <= 'B' ; ++c)
     {
       if (_fullResults[c - 'A'] == 114 && color)
 	ss << GREEN;

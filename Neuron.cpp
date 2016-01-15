@@ -29,7 +29,8 @@ float Neuron::getOutput()
       float sum(0);
       for (auto s : _inputs)
 	{
-	  sum += s.first->getOutput() * s.second;
+	  if (s.second)
+	    sum += s.first->getOutput() * s.second;
 	}
       _value = 1.0 / (1.0 + exp(-sum));
       _computed = true;
