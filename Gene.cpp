@@ -84,13 +84,16 @@ std::string Gene::printResults(bool color) const
   std::stringstream ss;
   for (char c('A') ; c <= 'B' ; ++c)
     {
-      if (_fullResults[c - 'A'] == 114 && color)
-	ss << GREEN;
-      else if (_fullResults[c - 'A'] > 0 && color)
-	ss << BLUE;
-      ss << "[" << c << "|" << _fullResults[c - 'A'] << "|" << _bitResults[c - 'A'] << "]";
-      if (color)
-	ss << RESET;
+      if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A')
+	{
+	  if (_fullResults[c - 'A'] == 114 && color)
+	    ss << GREEN;
+	  else if (_fullResults[c - 'A'] > 0 && color)
+	    ss << BLUE;
+	  ss << "[" << c << "|" << _fullResults[c - 'A'] << "|" << _bitResults[c - 'A'] << "]";
+	  if (color)
+	    ss << RESET;
+	}
     }
   ss << " => " << getScore();
   std::string s = ss.str();

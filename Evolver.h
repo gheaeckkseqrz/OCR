@@ -8,6 +8,7 @@ class Evolver
  public:
   Evolver();
 
+  Gene &getBestGene();
   Gene &getGene(unsigned int index);
   void evolve(unsigned int iteration = 0);
 

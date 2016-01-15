@@ -5,6 +5,11 @@ Evolver::Evolver()
 {
 }
 
+Gene &Evolver::getBestGene()
+{
+  return _best;
+}
+
 Gene &Evolver::getGene(unsigned int index)
 {
   return _genes[index];

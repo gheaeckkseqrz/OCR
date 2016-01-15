@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include "Gene.h"
 #include "Network.h"
+#include "Evolver.h"
 
 class Manager
 {
@@ -14,9 +15,16 @@ class Manager
   float getPixelValue(unsigned int x, unsigned int y) const;
 
   unsigned int getMatchingBits(char c1, char c2) const;
-  void train(Network &n, Gene &g);
+  void train(Gene &g);
+  void startTrain();
+  void stopTrain();
+
+  Evolver &getEvolver();
 
  private:
+  Network _network;
+  bool _train;
+  Evolver _evolver;
   cv::Mat _image;
 };
 
