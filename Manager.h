@@ -15,11 +15,15 @@ class Manager
   float getPixelValue(unsigned int x, unsigned int y) const;
 
   unsigned int getMatchingBits(char c1, char c2) const;
+
   void train(Gene &g);
   void startTrain();
   void stopTrain();
+  
+  void addNeuron(unsigned int number = 1);
 
   Evolver &getEvolver();
+  Network &getNetwork();
 
  private:
   Network _network;

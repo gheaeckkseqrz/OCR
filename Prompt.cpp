@@ -22,6 +22,10 @@ void Prompt::run()
 	train();
       if (input == "result")
 	std::cout << _manager.getEvolver().getBestGene().printResults(true) << std::endl;
+      if (input == "add")
+	_manager.addNeuron();
+      if (input == "description")
+	std::cout << _manager.getNetwork().getDescription() << std::endl;
     }
 }
 

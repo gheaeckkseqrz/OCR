@@ -44,7 +44,12 @@ Neuron *Network::addNeuron(unsigned int layer)
   _neurons[layer].push_back(neuron);
   for (auto n : _neurons[layer - 1])
     neuron->connectSynapse(Neuron::Synapse_t(n, 0));
-  
+  if (_neurons.size() > layer + 1)
+    {
+      for (auto n : _neurons[layer + 1])
+	n->connectSynapse(Neuron::Synapse_t(neuron, 0));
+    }
+
   return neuron;
 }
 
@@ -91,8 +96,42 @@ void Network::save(Gene &gene)
 
 void Network::load(Gene &gene)
 {
+  if (getSynapsesCount() != gene._weights.size())
+    {
+      std::cerr << "Can't load gene with size " << gene._weights.size() << " (Network size : " << getSynapsesCount() << ")" << std::endl;
+      return;
+    }
+
   unsigned int index(0);
   for (auto l : _neurons)
     for (auto n : l)
       index = n->loadWeights(gene, index);
+}
+
+unsigned int Network::getNeuronsCount() const
+{
+  unsigned int c(0);
+  for (auto l : _neurons)
+    c += l.size();
+  return c;
+}
+
+unsigned int Network::getSynapsesCount() const
+{
+  unsigned int previousSize = 0;
+  unsigned int c(0);
+  for (auto l : _neurons)
+    {
+      c += previousSize * l.size();
+      previousSize = l.size();
+    }
+  return c;
+}
+
+std::string Network::getDescription() const
+{
+  std::string s;
+  for (unsigned int l(0) ; l < _neurons.size() ; ++l)
+    s += "Layer " + std::to_string(l) + " : " + std::to_string(_neurons[l].size()) + " neurons\n"; 
+  return s;
 }

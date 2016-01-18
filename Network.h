@@ -17,6 +17,9 @@ class Network
 
   void save(Gene &gene);
   void load(Gene &gene);
+  unsigned int getNeuronsCount() const;
+  unsigned int getSynapsesCount() const;
+  std::string getDescription() const;
 
  private:
   typedef std::vector<Neuron *> NeuronLayer;
