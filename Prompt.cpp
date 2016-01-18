@@ -21,11 +21,13 @@ void Prompt::run()
       if (input == "train")
 	train();
       if (input == "result")
-	std::cout << _manager.getEvolver().getBestGene().printResults(true) << std::endl;
+	std::cout << _manager.getEvolver().getBestGene().printResults(_manager.getDataset(), true) << std::endl;
       if (input == "add")
 	add();
       if (input == "description")
 	std::cout << _manager.getNetwork().getDescription() << std::endl;
+      if (input == "dataset")
+	dataset();
     }
 }
 
@@ -52,4 +54,26 @@ void Prompt::add(unsigned int layer, unsigned int count)
       std::cin >> c;
     }
   _manager.addNeuron(l, c);
+}
+
+void Prompt::dataset()
+{
+  std::vector<bool> &dataset = _manager.getDataset();
+  for (char c('A') ; c <= 'Z' ; ++c)
+    std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
+  std::cout << std::endl;
+  std::string input;
+  std::cout << "To add : ";
+  std::getline(std::cin, input);
+  for (auto c : input)
+    if (c >= 'A' && c <= 'Z')
+      dataset[c - 'A'] = true;
+  std::cout << "To remove : ";
+  std::getline(std::cin, input);
+  for (auto c : input)
+    if (c >= 'A' && c <= 'Z')
+      dataset[c - 'A'] = false;
+  for (char c('A') ; c <= 'Z' ; ++c)
+    std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
+  std::cout << std::endl;
 }

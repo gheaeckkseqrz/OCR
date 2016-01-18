@@ -19,7 +19,7 @@ class Gene
   void setFullResults(std::vector<unsigned int> const &results);
   void setBitResults(std::vector<unsigned int> const &results);
   void setOutput(std::vector<unsigned int> const &output);
-  std::string printResults(bool color = false) const;
+  std::string printResults(std::vector<bool> const &dataset, bool color = false) const;
   float getScore() const;
 
   void saveToFile(std::string const &path);

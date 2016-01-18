@@ -74,7 +74,7 @@ void Gene::setOutput(std::vector<unsigned int> const &output)
   _output = output;
 }
 
-std::string Gene::printResults(bool color) const
+std::string Gene::printResults(std::vector<bool> const &dataset, bool color) const
 {
   const char *GREEN = "\033[0;32m";
   const char *BLUE = "\033[0;34m";
@@ -82,9 +82,9 @@ std::string Gene::printResults(bool color) const
   const char *RESET = "\033[0;00m";
 
   std::stringstream ss;
-  for (char c('A') ; c <= 'B' ; ++c)
+  for (char c('A') ; c <= 'Z' ; ++c)
     {
-      if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A')
+      if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A' && dataset[c - 'A'])
 	{
 	  if (_fullResults[c - 'A'] == 114 && color)
 	    ss << GREEN;
@@ -121,8 +121,6 @@ void Gene::saveToFile(std::string const &path)
 
   for (auto w : _weights)
     ss << w << " ";
-  ss << "\n\n";
-  ss << printResults() << "\n";
 
   std::ofstream out(path);
   out << ss.str();

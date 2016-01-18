@@ -2,10 +2,10 @@
 #include "Network.h"
 
 Manager::Manager()
-  :_network(*this), _train(false)
+  :_network(*this), _train(false), _dataset(26)
 {
-  _evolver.getGene(0).loadFromFile("weights.txt");
-  for (unsigned int i(1) ; i < 5 ; ++i)
+  //  _evolver.getGene(0).loadFromFile("weights.txt");
+  for (unsigned int i(0) ; i < 5 ; ++i)
     {
       _network.save(_evolver.getGene(i));
     }
@@ -57,23 +57,26 @@ void Manager::train(Gene &g)
   std::vector<unsigned int> output(255);
 
   _network.load(g);
-  for (char c('A') ; c <= 'B' ; ++c)
+  for (char c('A') ; c <= 'Z' ; ++c)
     {
       fullResults.push_back(0);
       bitResults.push_back(0);
-      for (unsigned int fontId(0) ; fontId < 114 ; ++fontId)
+      if (_dataset[c - 'A'])
 	{
-	  loadImage(c, fontId);
-	  unsigned char r = _network.getOutput();
-	  output[r]++;
-	  bitResults[c - 'A'] += getMatchingBits(c, r);
-	  fullResults[c- 'A'] += (c == r) ? 1 : 0;
+	  for (unsigned int fontId(0) ; fontId < 114 ; ++fontId)
+	    {
+	      loadImage(c, fontId);
+	      unsigned char r = _network.getOutput();
+	      output[r]++;
+	      bitResults[c - 'A'] += getMatchingBits(c, r);
+	      fullResults[c- 'A'] += (c == r) ? 1 : 0;
+	    }
 	}
     }
   g.setFullResults(fullResults);
   g.setBitResults(bitResults);
   g.setOutput(output);
-  std::cout << g.printResults(true) << std::endl;
+  std::cout << g.printResults(_dataset, true) << std::endl;
 }
 
 void Manager::startTrain()
@@ -112,4 +115,9 @@ Evolver &Manager::getEvolver()
 Network &Manager::getNetwork()
 {
   return _network;
+}
+
+std::vector<bool> &Manager::getDataset()
+{
+  return _dataset;
 }

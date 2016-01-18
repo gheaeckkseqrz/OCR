@@ -9,7 +9,7 @@ Network::Network(Manager const &manager)
   const unsigned int PICTURE_RESOLUTION = 16;
   const unsigned int INPUT_NEURONS = PICTURE_RESOLUTION * PICTURE_RESOLUTION;
   const unsigned int OUTPUT_NEURONS = 8;
-  const unsigned int HIDDEN_LAYERS = 1;
+  const unsigned int HIDDEN_LAYERS = 2;
 
   _neurons.push_back(NeuronLayer()); // Input Layer
   for (unsigned int i(0) ; i < INPUT_NEURONS ; ++i)

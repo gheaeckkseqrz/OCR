@@ -24,11 +24,13 @@ class Manager
 
   Evolver &getEvolver();
   Network &getNetwork();
+  std::vector<bool> &getDataset();
 
  private:
   Network _network;
   bool _train;
   Evolver _evolver;
+  std::vector<bool> _dataset;
   cv::Mat _image;
 };
 
