@@ -57,7 +57,7 @@ void Manager::train(Gene &g)
   std::vector<unsigned int> output(255);
 
   _network.load(g);
-  for (char c('A') ; c <= 'Z' ; ++c)
+  for (char c('A') ; c <= 'B' ; ++c)
     {
       fullResults.push_back(0);
       bitResults.push_back(0);
@@ -94,11 +94,11 @@ void Manager::stopTrain()
   _train = false;
 }
 
-void Manager::addNeuron(unsigned int number)
+void Manager::addNeuron(unsigned int layer, unsigned int number)
 {
   _network.load(_evolver.getBestGene());
   for (unsigned int i(0) ; i < number ; ++i)
-    _network.addNeuron(1);
+    _network.addNeuron(layer);
   _network.save(_evolver.getBestGene());
   for (int i(0) ; i < 5 ; ++i)
     _network.save(_evolver.getGene(i));

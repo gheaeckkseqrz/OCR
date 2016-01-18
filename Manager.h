@@ -20,7 +20,7 @@ class Manager
   void startTrain();
   void stopTrain();
   
-  void addNeuron(unsigned int number = 1);
+  void addNeuron(unsigned int layer, unsigned int number = 1);
 
   Evolver &getEvolver();
   Network &getNetwork();

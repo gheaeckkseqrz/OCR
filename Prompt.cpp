@@ -23,7 +23,7 @@ void Prompt::run()
       if (input == "result")
 	std::cout << _manager.getEvolver().getBestGene().printResults(true) << std::endl;
       if (input == "add")
-	_manager.addNeuron();
+	add();
       if (input == "description")
 	std::cout << _manager.getNetwork().getDescription() << std::endl;
     }
@@ -35,4 +35,21 @@ void Prompt::train()
   getchar();
   _manager.stopTrain();
   t.join();  
+}
+
+void Prompt::add(unsigned int layer, unsigned int count)
+{
+  unsigned int l(layer);
+  unsigned int c(count);
+  if (l == -1)
+    {
+      std::cout << "Layer : ";
+      std::cin >> l;
+    }
+  if (c == -1)
+    {
+      std::cout << "Count : ";
+      std::cin >> c;
+    }
+  _manager.addNeuron(l, c);
 }

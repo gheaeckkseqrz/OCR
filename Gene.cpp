@@ -82,7 +82,7 @@ std::string Gene::printResults(bool color) const
   const char *RESET = "\033[0;00m";
 
   std::stringstream ss;
-  for (char c('A') ; c <= 'Z' ; ++c)
+  for (char c('A') ; c <= 'B' ; ++c)
     {
       if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A')
 	{

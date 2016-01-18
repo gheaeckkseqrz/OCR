@@ -10,6 +10,7 @@ class Prompt
 
   void run();
   void train();
+  void add(unsigned int layer = -1, unsigned int count = -1);
 
  private:
   Manager &_manager;
