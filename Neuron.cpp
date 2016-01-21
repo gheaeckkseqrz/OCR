@@ -16,6 +16,11 @@ Neuron::~Neuron()
   
 }
 
+unsigned int Neuron::getId() const
+{
+  return _id;
+}
+
 void Neuron::reset()
 {
   _computed = false;
@@ -58,4 +63,9 @@ unsigned int Neuron::loadWeights(Gene const &gene, unsigned int index)
       i++;
     }
   return index + i;
+}
+
+std::ostream& operator <<(std::ostream& osObject, const Neuron& n)
+{
+  return osObject << "[" << n.getId() << "]";
 }

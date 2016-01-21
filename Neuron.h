@@ -13,6 +13,7 @@ class Neuron
   Neuron();
   virtual ~Neuron();
 
+  unsigned int getId() const;
   void reset();
   virtual float getOutput();
   void connectSynapse(Synapse_t const &s);
@@ -26,5 +27,7 @@ class Neuron
   float _value;
   std::vector<Synapse_t> _inputs;
 };
+
+std::ostream& operator <<(std::ostream& osObject, const Neuron& n);
 
 #endif

@@ -1,7 +1,9 @@
+#include <math.h>       /* fabs */
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
+#include <numeric>
 #include "Gene.h"
 
 Gene::Gene(std::string const &path)
@@ -49,7 +51,7 @@ void Gene::mute(unsigned int probability)
 {
   for (unsigned int i(0) ; i < _weights.size() ; ++i)
     if (rand() % 100 < probability)
-      _weights[i] = (float)((rand() % 2001) - 1000) / 1000;
+      _weights[i] = (rand() % 2) ? ((float)((rand() % 2001) - 1000) / 1000) : 0;
 }
 
 void Gene::mute(Gene const &model, unsigned int probability)
@@ -74,7 +76,7 @@ void Gene::setOutput(std::vector<unsigned int> const &output)
   _output = output;
 }
 
-std::string Gene::printResults(std::vector<bool> const &dataset, bool color) const
+std::string Gene::printResults(std::vector<bool> const &dataset, unsigned int fontsCount, bool color) const
 {
   const char *GREEN = "\033[0;32m";
   const char *BLUE = "\033[0;34m";
@@ -86,7 +88,7 @@ std::string Gene::printResults(std::vector<bool> const &dataset, bool color) con
     {
       if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A' && dataset[c - 'A'])
 	{
-	  if (_fullResults[c - 'A'] == 114 && color)
+	  if (_fullResults[c - 'A'] == fontsCount && color)
 	    ss << GREEN;
 	  else if (_fullResults[c - 'A'] > 0 && color)
 	    ss << BLUE;
@@ -95,7 +97,7 @@ std::string Gene::printResults(std::vector<bool> const &dataset, bool color) con
 	    ss << RESET;
 	}
     }
-  ss << " => " << getScore();
+  ss << " => " << getScore() << " (" << getWeightsSum() << ")";
   std::string s = ss.str();
   return s;
 }
@@ -104,15 +106,23 @@ float Gene::getScore() const
 {
    float score(0);
 
-//    unsigned int unique(0);
-//    for (auto f : _fullResults)
-//      {
-//        score += 10 * f;
-//        unique += f ? 1 : 0;
-//      }
+//     unsigned int unique(0);
+//     for (auto f : _fullResults)
+//       {
+//         score += 10 * f;
+//         unique += f ? 1 : 0;
+//       }
   for (auto b : _bitResults)
     score += b;
   return score;// * (unique + 1);
+}
+
+float Gene::getWeightsSum() const
+{
+  float sum(0);
+  for (auto w : _weights)
+    sum += fabs(w);
+  return sum;
 }
 
 void Gene::saveToFile(std::string const &path)
@@ -125,4 +135,16 @@ void Gene::saveToFile(std::string const &path)
   std::ofstream out(path);
   out << ss.str();
   out.close();
+}
+
+bool Gene::perfect(std::vector<bool> const &dataset, unsigned int fontsCount) const
+{
+  if (dataset.size() != _fullResults.size() || dataset.empty())
+    return false;
+  for (unsigned int i(0) ; i < dataset.size() ; ++i)
+    {
+      if (dataset[i] && _fullResults[i] != fontsCount)
+	return false;
+    }
+  return true;
 }

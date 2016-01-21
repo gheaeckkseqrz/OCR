@@ -1,3 +1,4 @@
+#include <sstream>
 #include <iostream>
 #include <thread>
 #include "Network.h"
@@ -51,6 +52,15 @@ Neuron *Network::addNeuron(unsigned int layer)
     }
 
   return neuron;
+}
+
+Neuron *Network::getNeuron(unsigned int id) const
+{
+  for (auto l : _neurons)
+    for (auto n : l)
+      if (n->getId() == id)
+	return n;
+  return nullptr;
 }
 
 void Network::reset()
@@ -135,3 +145,13 @@ std::string Network::getDescription() const
     s += "Layer " + std::to_string(l) + " : " + std::to_string(_neurons[l].size()) + " neurons\n"; 
   return s;
 }
+
+std::string Network::getDescription(unsigned int layer) const
+{
+  std::stringstream ss;
+  for (auto n : _neurons[layer])
+    ss << *n;
+  return ss.str();
+}
+
+

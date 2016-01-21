@@ -12,6 +12,8 @@ class Network
   Network(Manager const &manager);
   
   Neuron *addNeuron(unsigned int layer);
+  Neuron *getNeuron(unsigned int id) const;
+
   void reset();
   unsigned char getOutput();
 
@@ -20,6 +22,7 @@ class Network
   unsigned int getNeuronsCount() const;
   unsigned int getSynapsesCount() const;
   std::string getDescription() const;
+  std::string getDescription(unsigned int layer) const;
 
  private:
   typedef std::vector<Neuron *> NeuronLayer;

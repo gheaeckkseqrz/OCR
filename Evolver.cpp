@@ -27,8 +27,8 @@ void Evolver::evolve(unsigned int iteration)
     });
 
   lastIncrease++;
-  if (_genes[0].getScore() > _best.getScore())
-    {
+  if (_genes[0].getScore() > _best.getScore() || (_genes[0].getScore() == _best.getScore() && _genes[0].getWeightsSum() < _best.getWeightsSum()))
+    {      
       increase = _genes[0].getScore() - _best.getScore();
       _best = _genes[0];
       lastIncrease = 0;
@@ -36,7 +36,7 @@ void Evolver::evolve(unsigned int iteration)
       std::cout << "Best score is " << _best.getScore() << " (" << GREEN << "+" << increase << RESET << ")." << std::endl;
     }
   else
-      std::cout << "Best score is " << _best.getScore() << " (last increase " << lastIncrease << " turns ago)." << std::endl;
+    std::cout << "Best score is " << _best.getScore() << " (" << _best.getWeightsSum() << ") (last increase " << lastIncrease << " turns ago)." << std::endl;
 
   _genes[1] = _best;
   _genes[1].mute(_genes[0]); // Do a crossover between best two
@@ -50,4 +50,11 @@ void Evolver::evolve(unsigned int iteration)
   _genes[3].mute(35);
 
   _genes[4].mute(100); // Create fresh
+}
+
+void Evolver::forgetBestScore()
+{
+  std::vector<unsigned int> results(26);
+  _best.setBitResults(results);
+  _best.setFullResults(results);
 }

@@ -12,6 +12,8 @@ class Prompt
   void train();
   void add(unsigned int layer = -1, unsigned int count = -1);
   void dataset();
+  void layerDescription();
+  void neuronInfo();
 
  private:
   Manager &_manager;

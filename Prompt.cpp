@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <thread>
 #include "Prompt.h"
@@ -26,15 +27,22 @@ void Prompt::run()
 	add();
       if (input == "description")
 	std::cout << _manager.getNetwork().getDescription() << std::endl;
+      if (input == "layerdescription")
+	layerDescription();
       if (input == "dataset")
 	dataset();
+      if (input == "neuroninfo")
+	neuronInfo();
+      if (input == "reset")
+	_manager.getEvolver().forgetBestScore();
     }
 }
 
 void Prompt::train()
 {
+  std::string s;
   std::thread t = std::thread(&Manager::startTrain, &_manager);
-  getchar();
+  std::getline(std::cin, s);
   _manager.stopTrain();
   t.join();  
 }
@@ -58,10 +66,11 @@ void Prompt::add(unsigned int layer, unsigned int count)
 
 void Prompt::dataset()
 {
+  unsigned int fontCount;
   std::vector<bool> &dataset = _manager.getDataset();
   for (char c('A') ; c <= 'Z' ; ++c)
     std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
-  std::cout << std::endl;
+  std::cout << " (" << _manager.getFontCount() << ")" << std::endl;
   std::string input;
   std::cout << "To add : ";
   std::getline(std::cin, input);
@@ -73,7 +82,45 @@ void Prompt::dataset()
   for (auto c : input)
     if (c >= 'A' && c <= 'Z')
       dataset[c - 'A'] = false;
+  std::cout << "Font Count : ";
+  std::cin >> fontCount;
+  _manager.setFontCount(fontCount);
   for (char c('A') ; c <= 'Z' ; ++c)
     std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
-  std::cout << std::endl;
+  std::cout << " (" << _manager.getFontCount() << ")" << std::endl;
+}
+
+void Prompt::layerDescription()
+{
+  unsigned int layer;
+  std::cout << "Layer : ";
+  std::cin >> layer;
+  std::cout << _manager.getNetwork().getDescription(layer) << std::endl;
+}
+
+void Prompt::neuronInfo()
+{
+  unsigned int neuronId(0);
+  std::cout << "Neuron Id : ";
+  std::cin >> neuronId;
+
+  Neuron *n = _manager.getNetwork().getNeuron(neuronId);
+  if (n)
+    {
+      Gene g;
+      n->saveWeights(g);
+
+      for (unsigned int i(0) ; i < 256 ; ++i)
+	{
+	  if (i && i % 16 == 0)
+	    std::cout << std::endl;
+	  if (g._weights[i] > -0.1 && g._weights[i] < 0.1)
+	    std::cout << "[\033[0;34m" << std::fixed << std::setprecision(1) << g._weights[i] * ( g._weights[i] >= 0 ? 1 : -1) << "\033[0;00m]";
+	  else if (g._weights[i] > 0)
+	    std::cout << "[\033[0;32m" << std::fixed << std::setprecision(1) << g._weights[i] << "\033[0;00m]";
+	  else
+	    std::cout << "[\033[0;31m" << std::fixed << std::setprecision(1) << g._weights[i] * -1 << "\033[0;00m]";
+	}
+      std::cout << std::endl;
+    }
 }

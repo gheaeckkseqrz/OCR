@@ -25,12 +25,15 @@ class Manager
   Evolver &getEvolver();
   Network &getNetwork();
   std::vector<bool> &getDataset();
-
+  unsigned int getFontCount() const;
+  void setFontCount(unsigned int c);
+  
  private:
   Network _network;
   bool _train;
   Evolver _evolver;
   std::vector<bool> _dataset;
+  unsigned int _fontsCount;
   cv::Mat _image;
 };
 

@@ -12,6 +12,8 @@ class Evolver
   Gene &getGene(unsigned int index);
   void evolve(unsigned int iteration = 0);
 
+  void forgetBestScore();
+
  private:
   Gene _genes[5];
   Gene _best;
