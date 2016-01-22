@@ -24,6 +24,9 @@ class Network
   std::string getDescription() const;
   std::string getDescription(unsigned int layer) const;
 
+ public:
+  static const unsigned int PICTURE_RESOLUTION;
+
  private:
   typedef std::vector<Neuron *> NeuronLayer;
   std::vector<NeuronLayer> _neurons;

@@ -13,6 +13,7 @@ class Manager
 
   void loadImage(char c, unsigned int fontId);
   float getPixelValue(unsigned int x, unsigned int y) const;
+  void displayInput();
 
   unsigned int getMatchingBits(char c1, char c2) const;
 

@@ -35,6 +35,10 @@ void Prompt::run()
 	neuronInfo();
       if (input == "reset")
 	_manager.getEvolver().forgetBestScore();
+      if (input == "displayinput")
+	_manager.displayInput();
+      if (input == "loadimage")
+	loadImage();
     }
 }
 
@@ -110,9 +114,9 @@ void Prompt::neuronInfo()
       Gene g;
       n->saveWeights(g);
 
-      for (unsigned int i(0) ; i < 256 ; ++i)
+      for (unsigned int i(0) ; i < g._weights.size() ; ++i)
 	{
-	  if (i && i % 16 == 0)
+	  if (i && i % Network::PICTURE_RESOLUTION == 0)
 	    std::cout << std::endl;
 	  if (g._weights[i] > -0.1 && g._weights[i] < 0.1)
 	    std::cout << "[\033[0;34m" << std::fixed << std::setprecision(1) << g._weights[i] * ( g._weights[i] >= 0 ? 1 : -1) << "\033[0;00m]";
@@ -123,4 +127,17 @@ void Prompt::neuronInfo()
 	}
       std::cout << std::endl;
     }
+}
+
+void Prompt::loadImage()
+{
+  char c;
+  unsigned int fontId;
+
+  std::cout << "Char : ";
+  std::cin >> c;
+  std::cout << "FontId : ";
+  std::cin >> fontId;
+
+  _manager.loadImage(c, fontId);
 }

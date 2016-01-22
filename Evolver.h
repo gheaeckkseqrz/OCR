@@ -13,8 +13,10 @@ class Evolver
   void evolve(unsigned int iteration = 0);
 
   void forgetBestScore();
+  unsigned int getLastIncrease() const;
 
  private:
+  unsigned int _lastIncrease;
   Gene _genes[5];
   Gene _best;
 };

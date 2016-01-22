@@ -1,3 +1,4 @@
+#include <cassert>
 #include <sstream>
 #include <iostream>
 #include <thread>
@@ -5,12 +6,13 @@
 #include "InputNeuron.h"
 #include "Gene.h"
 
+const unsigned int Network::PICTURE_RESOLUTION = 64;
+
 Network::Network(Manager const &manager)
 {
-  const unsigned int PICTURE_RESOLUTION = 16;
   const unsigned int INPUT_NEURONS = PICTURE_RESOLUTION * PICTURE_RESOLUTION;
   const unsigned int OUTPUT_NEURONS = 8;
-  const unsigned int HIDDEN_LAYERS = 2;
+  const unsigned int HIDDEN_LAYERS = 1;
 
   _neurons.push_back(NeuronLayer()); // Input Layer
   for (unsigned int i(0) ; i < INPUT_NEURONS ; ++i)
@@ -19,7 +21,7 @@ Network::Network(Manager const &manager)
   for (unsigned int layer(1) ; layer <= HIDDEN_LAYERS ; ++layer)
     {
       _neurons.push_back(NeuronLayer());
-      for (unsigned int i(0) ; i < INPUT_NEURONS ; ++i)
+      for (unsigned int i(0) ; i < 1 ; ++i)
 	addNeuron(layer);
     }
 
@@ -102,6 +104,8 @@ void Network::save(Gene &gene)
   for (auto l : _neurons)
     for (auto n : l)
       n->saveWeights(gene);
+  assert(getSynapsesCount() == gene._weights.size());
+  std::cout << "Saved " << getSynapsesCount() << " weights" << std::endl; 
 }
 
 void Network::load(Gene &gene)

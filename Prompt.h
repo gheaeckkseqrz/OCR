@@ -14,6 +14,7 @@ class Prompt
   void dataset();
   void layerDescription();
   void neuronInfo();
+  void loadImage();
 
  private:
   Manager &_manager;
