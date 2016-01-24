@@ -16,7 +16,7 @@ Gene &Evolver::getGene(unsigned int index)
   return _genes[index];
 }
 
-void Evolver::evolve(unsigned int iteration)
+bool Evolver::evolve(unsigned int iteration)
 {
   const char *GREEN = "\033[0;32m";
   const char *RESET = "\033[0;00m";
@@ -50,7 +50,11 @@ void Evolver::evolve(unsigned int iteration)
   _genes[3] = _best; // Mute a third of best one
   _genes[3].mute(35);
 
-  _genes[4].mute(100); // Create fresh
+  if (_lastIncrease % 500 == 0)
+    _genes[4] = _best;
+  _genes[4].mute(1); // Slow mute
+
+  return _lastIncrease == 0;
 }
 
 void Evolver::forgetBestScore()

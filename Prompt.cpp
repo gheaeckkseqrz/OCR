@@ -39,6 +39,10 @@ void Prompt::run()
 	_manager.displayInput();
       if (input == "loadimage")
 	loadImage();
+      if (input == "tty")
+	tty();
+      if (input == "cleanNeuron")
+	cleanNeuron();
     }
 }
 
@@ -108,25 +112,7 @@ void Prompt::neuronInfo()
   std::cout << "Neuron Id : ";
   std::cin >> neuronId;
 
-  Neuron *n = _manager.getNetwork().getNeuron(neuronId);
-  if (n)
-    {
-      Gene g;
-      n->saveWeights(g);
-
-      for (unsigned int i(0) ; i < g._weights.size() ; ++i)
-	{
-	  if (i && i % Network::PICTURE_RESOLUTION == 0)
-	    std::cout << std::endl;
-	  if (g._weights[i] > -0.1 && g._weights[i] < 0.1)
-	    std::cout << "[\033[0;34m" << std::fixed << std::setprecision(1) << g._weights[i] * ( g._weights[i] >= 0 ? 1 : -1) << "\033[0;00m]";
-	  else if (g._weights[i] > 0)
-	    std::cout << "[\033[0;32m" << std::fixed << std::setprecision(1) << g._weights[i] << "\033[0;00m]";
-	  else
-	    std::cout << "[\033[0;31m" << std::fixed << std::setprecision(1) << g._weights[i] * -1 << "\033[0;00m]";
-	}
-      std::cout << std::endl;
-    }
+  std::cout << _manager.neuronInfo(neuronId) << std::endl;
 }
 
 void Prompt::loadImage()
@@ -140,4 +126,23 @@ void Prompt::loadImage()
   std::cin >> fontId;
 
   _manager.loadImage(c, fontId);
+}
+
+void Prompt::tty()
+{
+  std::string tty;
+  unsigned int neuronId;
+  std::cout << "NeuronId : ";
+  std::cin >> neuronId;
+  std::cout << "TTY : ";
+  std::cin >> tty;
+  _manager.registerLiveUpdate(neuronId, tty);
+}
+
+void Prompt::cleanNeuron()
+{
+  unsigned int neuronId;
+  std::cout << "NeuronId : ";
+  std::cin >> neuronId;
+  _manager.cleanNeuron(neuronId);
 }

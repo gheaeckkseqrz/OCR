@@ -10,7 +10,7 @@ class Evolver
 
   Gene &getBestGene();
   Gene &getGene(unsigned int index);
-  void evolve(unsigned int iteration = 0);
+  bool evolve(unsigned int iteration = 0);
 
   void forgetBestScore();
   unsigned int getLastIncrease() const;

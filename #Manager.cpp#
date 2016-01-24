@@ -124,9 +124,11 @@ void Manager::startTrain()
     {
       if (_evolver.getLastIncrease() && _evolver.getLastIncrease() % 10000 == 0)
 	addNeuron(1, 1);
+
       std::cout << "Iteration " << ++iteration << std::endl;
       for (unsigned int i(0) ; i < 5 ; ++i)
 	train(_evolver.getGene(i));
+
       if (_evolver.evolve(iteration))
 	{
 	  cleanAll();

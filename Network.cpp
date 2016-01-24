@@ -6,7 +6,7 @@
 #include "InputNeuron.h"
 #include "Gene.h"
 
-const unsigned int Network::PICTURE_RESOLUTION = 64;
+const unsigned int Network::PICTURE_RESOLUTION = 32;
 
 Network::Network(Manager const &manager)
 {
@@ -105,7 +105,6 @@ void Network::save(Gene &gene)
     for (auto n : l)
       n->saveWeights(gene);
   assert(getSynapsesCount() == gene._weights.size());
-  std::cout << "Saved " << getSynapsesCount() << " weights" << std::endl; 
 }
 
 void Network::load(Gene &gene)

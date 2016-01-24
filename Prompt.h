@@ -15,6 +15,8 @@ class Prompt
   void layerDescription();
   void neuronInfo();
   void loadImage();
+  void tty();
+  void cleanNeuron();
 
  private:
   Manager &_manager;
