@@ -121,16 +121,24 @@ void Network::load(Gene &gene)
       index = n->loadWeights(gene, index);
 }
 
-unsigned int Network::getNeuronsCount() const
+unsigned int Network::getNeuronsCount(unsigned int layerId) const
 {
+  if (layerId >= _neurons.size() && layerId != -1)
+    return 0;
+  if (layerId != -1)
+    return _neurons[layerId].size();
   unsigned int c(0);
   for (auto l : _neurons)
     c += l.size();
   return c;
 }
 
-unsigned int Network::getSynapsesCount() const
+unsigned int Network::getSynapsesCount(unsigned int layerId) const
 {
+  if (layerId >= _neurons.size() && layerId != -1)
+    return 0;
+  if (layerId != -1)
+    return _neurons[layerId].size() * (layerId - 1 < layerId ? _neurons[layerId - 1].size() : 0); 
   unsigned int previousSize = 0;
   unsigned int c(0);
   for (auto l : _neurons)

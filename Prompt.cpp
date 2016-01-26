@@ -21,8 +21,8 @@ void Prompt::run()
 	break;
       if (input == "train")
 	train();
-      if (input == "result")
-	std::cout << _manager.getEvolver().getBestGene().printResults(_manager.getDataset(), true) << std::endl;
+      //      if (input == "result")
+      //	std::cout << _manager.getEvolver().getBestGene().printResults(_manager.getDataset(), true) << std::endl;
       if (input == "add")
 	add();
       if (input == "description")
@@ -33,8 +33,8 @@ void Prompt::run()
 	dataset();
       if (input == "neuroninfo")
 	neuronInfo();
-      if (input == "reset")
-	_manager.getEvolver().forgetBestScore();
+      //      if (input == "reset")
+      //_manager.getEvolver().forgetBestScore();
       if (input == "displayinput")
 	_manager.displayInput();
       if (input == "loadimage")

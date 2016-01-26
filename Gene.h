@@ -13,8 +13,8 @@ class Gene
   void addWeight(float w);
   float getWeight(unsigned int index) const;
 
-  void mute(unsigned int probability = 5);
-  void mute(Gene const &model, unsigned int probability = 5);
+  void mute(unsigned int probability = 5, unsigned int start = 0, unsigned int end = 0);
+  void mute(Gene const &model, unsigned int probability = 5, unsigned int start = 0, unsigned int end = 0);
 
   void setFullResults(std::vector<unsigned int> const &results);
   void setBitResults(std::vector<unsigned int> const &results);
@@ -23,6 +23,7 @@ class Gene
   float getScore() const;
   float getWeightsSum() const;
   bool perfect(std::vector<bool> const &dataset, unsigned int fontsCount) const;
+  bool compare(Gene const &o, unsigned int start = 0, unsigned int end = -1) const;
 
   void saveToFile(std::string const &path);
 

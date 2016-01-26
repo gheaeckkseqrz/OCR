@@ -1,8 +1,6 @@
 #include <cstdlib> // srand()
 #include <iostream>
 #include "Manager.h"
-#include "Network.h"
-#include "Evolver.h"
 #include "Prompt.h"
 
 int main(int ac, char **av)

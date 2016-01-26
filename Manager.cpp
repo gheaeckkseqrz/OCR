@@ -5,12 +5,6 @@
 Manager::Manager()
   :_network(*this), _train(false), _dataset(26), _fontsCount(0)
 {
-  //  _evolver.getGene(0).loadFromFile("weights.txt");
-  _network.save(_evolver.getBestGene());
-  for (unsigned int i(0) ; i < 5 ; ++i)
-    {
-      _network.save(_evolver.getGene(i));
-    }
 }
 
 void Manager::loadImage(char c, unsigned int fontId)
@@ -113,27 +107,69 @@ void Manager::train(Gene &g)
   g.setFullResults(fullResults);
   g.setBitResults(bitResults);
   g.setOutput(output);
-  std::cout << g.printResults(_dataset, _fontsCount, true) << std::endl;
+}
+
+bool Manager::evolveAndTrain(Gene &g, unsigned int layer)
+{
+  unsigned int start(0);
+  unsigned int end(0);
+  for (unsigned int l(0) ; l < layer ; ++l)
+    start += _network.getSynapsesCount(l);
+  end = start;
+  start -= _network.getNeuronsCount(layer - 1);
+
+  for (unsigned int n(0) ; n < _network.getNeuronsCount(layer) ; ++n)
+    {
+      Gene g2 = g;
+      start += _network.getNeuronsCount(layer - 1);
+      end += _network.getNeuronsCount(layer - 1);
+
+      while (g.compare(g2, start, end))
+	g2.mute(10, start, end);
+
+      train(g2);
+      if (g2.getScore() > _gene.getScore())
+	{
+	  g = g2;
+	  return true;
+	}
+      if (_network.getNeuronsCount(layer + 1))
+	{
+	  for (unsigned int i(0) ; i < 10 ; ++i)
+	    if (evolveAndTrain(g2, layer + 1))
+	      {
+		g = g2;
+		return true;
+	      }
+	}
+    }
+  return false;
 }
 
 void Manager::startTrain()
 {
   _train = true;
   unsigned int iteration(0);
-  while (_train && !_evolver.getBestGene().perfect(_dataset, _fontsCount))
+  unsigned int lastIncrease(0);
+  if (_gene._weights.size() != _network.getSynapsesCount())
+    _network.save(_gene);
+  while (_train && !_gene.perfect(_dataset, _fontsCount))
     {
-      if (_evolver.getLastIncrease() && _evolver.getLastIncrease() % 10000 == 0)
-	addNeuron(1, 1);
+      lastIncrease++;
+      if (lastIncrease && lastIncrease % 25000 == 0)
+      	addNeuron(1, 1);
       std::cout << "Iteration " << ++iteration << std::endl;
-      for (unsigned int i(0) ; i < 5 ; ++i)
-	train(_evolver.getGene(i));
-      if (_evolver.evolve(iteration))
+      Gene g = _gene;
+      if (evolveAndTrain(g, 1))
 	{
-	  cleanAll();
-	  liveUpdate();
+	  _gene = g;
+ 	  cleanAll();
+ 	  liveUpdate();
+	  lastIncrease = 0;
 	}
- 
-      if (_evolver.getBestGene().perfect(_dataset, _fontsCount))
+      float diff = g.getScore() - _gene.getScore();
+      std::cout << g.printResults(_dataset, _fontsCount, true) << " - (" << (diff > 0 ? "\033[0;32m" : "\033[0;31m") << diff << "\033[0;00m) - LastIncrease : " << lastIncrease << std::endl;
+      if (_gene.perfect(_dataset, _fontsCount))
 	{
 	  std::cout << "PERFECT" << std::endl;
 	  if (_fontsCount < 105 && std::count(_dataset.begin(), _dataset.end(), true) > _fontsCount / 2)
@@ -143,11 +179,11 @@ void Manager::startTrain()
 	      while (std::count(_dataset.begin(), _dataset.end(), true) != _dataset.size())
 		{
 		  unsigned int randomId = std::rand() % _dataset.size();
-		if (!_dataset[randomId])
-		  {
-		    _dataset[randomId] = true;
-		    break;
-		  }
+		  if (!_dataset[randomId])
+		    {
+		      _dataset[randomId] = true;
+		      break;
+		    }
 		}
 	    }
 	}
@@ -161,8 +197,8 @@ void Manager::stopTrain()
 
 void Manager::cleanNeuron(unsigned int neuronId)
 {
-  _network.load(_evolver.getBestGene());
-  float best = _evolver.getBestGene().getScore();
+  _network.load(_gene);
+  float best = _gene.getScore();
   Neuron *n = _network.getNeuron(neuronId);
   if (n)
     {
@@ -172,18 +208,20 @@ void Manager::cleanNeuron(unsigned int neuronId)
       unsigned int i(0);
       for (auto &w : cleanGene._weights)
 	{
-	  float backup = w;
-	  w = 0.0;
-	  n->loadWeights(cleanGene, 0);
-	  _network.save(trainGene);
-	  std::cout << "Clean " << i++ << " / " << cleanGene._weights.size() << " - ";
-	  train(trainGene);
-	  if (trainGene.getScore() < best)
-	    w = backup;
+	  if (w != 0)
+	    { 
+	      float backup = w;
+	      w = 0.0;
+	      n->loadWeights(cleanGene, 0);
+	      _network.save(trainGene);
+	      train(trainGene);
+	      if (trainGene.getScore() < best)
+		w = backup;
+	    }
 	}
       n->loadWeights(cleanGene, 0);
-      _network.save(_evolver.getBestGene());
-      train(_evolver.getBestGene());
+      _network.save(_gene);
+      train(_gene);
       liveUpdate();
     }
 }
@@ -191,26 +229,31 @@ void Manager::cleanNeuron(unsigned int neuronId)
 void Manager::cleanAll()
 {
   for (unsigned int i(std::pow(Network::PICTURE_RESOLUTION, 2) - 1) ; i < _network.getNeuronsCount() ; ++i)
-    cleanNeuron(i);
+    {
+      std::cout << "\rCleaning " << i << " / " << _network.getNeuronsCount();
+      std::cout.flush();
+      cleanNeuron(i);
+    }
+  std::cout << std::endl;
 }
 
 void Manager::addNeuron(unsigned int layer, unsigned int number)
 {
-  _network.load(_evolver.getBestGene());
+  _network.load(_gene);
   for (unsigned int i(0) ; i < number ; ++i)
     _network.addNeuron(layer);
-  _network.save(_evolver.getBestGene());
-  for (int i(0) ; i < 5 ; ++i)
-    _network.save(_evolver.getGene(i));
+  _network.save(_gene);
+  _network.train(_gene); // Re-save score
 }
 
 void Manager::liveUpdate()
 {
-  _network.load(_evolver.getBestGene());
+  _network.load(_gene);
   for (auto &tty : _ttys)
     {
       tty.second << "\033[2J\033[1;1H" << neuronInfo(tty.first) << std::endl;
       tty.second << "Neuron : " << tty.first << std::endl;
+      tty.second << _gene.printResults(_dataset, _fontsCount, true) << std::endl;
     }
 }
 
@@ -218,11 +261,6 @@ void Manager::registerLiveUpdate(unsigned int neuronId, std::string const &tty)
 {
   _ttys.push_back(std::pair<unsigned int, std::ofstream>(neuronId, std::ofstream(tty)));
   liveUpdate();
-}
-
-Evolver &Manager::getEvolver()
-{
-  return _evolver;
 }
 
 Network &Manager::getNetwork()

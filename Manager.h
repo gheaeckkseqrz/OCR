@@ -5,7 +5,6 @@
 #include <opencv2/opencv.hpp>
 #include "Gene.h"
 #include "Network.h"
-#include "Evolver.h"
 
 class Manager
 {
@@ -20,6 +19,7 @@ class Manager
   unsigned int getMatchingBits(char c1, char c2) const;
 
   void train(Gene &g);
+  bool evolveAndTrain(Gene & g, unsigned int layer = 1);
   void startTrain();
   void stopTrain();
   void cleanNeuron(unsigned int neuronId);
@@ -29,7 +29,6 @@ class Manager
   void registerLiveUpdate(unsigned int neuronId, std::string const &tty);
   void liveUpdate();
 
-  Evolver &getEvolver();
   Network &getNetwork();
   std::vector<bool> &getDataset();
   unsigned int getFontCount() const;
@@ -37,8 +36,8 @@ class Manager
   
  private:
   Network _network;
+  Gene _gene;
   bool _train;
-  Evolver _evolver;
   std::vector<bool> _dataset;
   unsigned int _fontsCount;
   cv::Mat _image;

@@ -47,16 +47,26 @@ float Gene::getWeight(unsigned int index) const
   return _weights[index];
 }
 
-void Gene::mute(unsigned int probability)
+void Gene::mute(unsigned int probability, unsigned int start, unsigned int end)
 {
-  for (unsigned int i(0) ; i < _weights.size() ; ++i)
+  if (start > _weights.size() || end > _weights.size())
+    {
+      std::cerr << "Can't mute, invalid interval [" << start << ", " << end << "] (Size : " << _weights.size() << ")" << std::endl;
+      return;
+    }
+  for (unsigned int i(start) ; i < (end ? end : _weights.size()) ; ++i)
     if (rand() % 100 < probability)
       _weights[i] = (rand() % 2) ? ((float)((rand() % 2001) - 1000) / 1000) : 0;
 }
 
-void Gene::mute(Gene const &model, unsigned int probability)
+void Gene::mute(Gene const &model, unsigned int probability, unsigned int start, unsigned int end)
 {
-  for (unsigned int i(0) ; i < _weights.size() ; ++i)
+  if (start > _weights.size() || end > _weights.size())
+    {
+      std::cerr << "Can't mute, invalid interval [" << start << ", " << end << "] (Size : " << _weights.size() << ")" << std::endl;
+      return;
+    }
+  for (unsigned int i(start) ; i < (end ? end : _weights.size()) ; ++i)
     if (rand() % 100 < probability)
       _weights[i] = model._weights[i];
 }
@@ -146,5 +156,16 @@ bool Gene::perfect(std::vector<bool> const &dataset, unsigned int fontsCount) co
       if (dataset[i] && _fullResults[i] != fontsCount)
 	return false;
     }
+  return true;
+}
+
+bool Gene::compare(Gene const &o, unsigned int start, unsigned int end) const
+{
+  if (end == -1)
+    end = _weights.size();
+
+  for (unsigned int i(start) ; i < end ; ++i)
+    if (_weights[i] != o._weights[i])
+      return false;
   return true;
 }

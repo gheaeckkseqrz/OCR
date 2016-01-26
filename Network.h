@@ -19,8 +19,8 @@ class Network
 
   void save(Gene &gene);
   void load(Gene &gene);
-  unsigned int getNeuronsCount() const;
-  unsigned int getSynapsesCount() const;
+  unsigned int getNeuronsCount(unsigned int layerId  = -1) const;
+  unsigned int getSynapsesCount(unsigned int layerId = -1) const;
   std::string getDescription() const;
   std::string getDescription(unsigned int layer) const;
 
