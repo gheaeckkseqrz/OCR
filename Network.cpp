@@ -6,7 +6,7 @@
 #include "InputNeuron.h"
 #include "Gene.h"
 
-const unsigned int Network::PICTURE_RESOLUTION = 32;
+const unsigned int Network::PICTURE_RESOLUTION = 8;
 
 Network::Network(Manager const &manager)
 {

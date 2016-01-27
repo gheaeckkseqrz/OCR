@@ -1,6 +1,7 @@
 #ifndef __NEURON_H__
 #define __NEURON_H__
 
+#include <iostream>
 #include <vector>
 class Gene;
 
