@@ -1,5 +1,5 @@
 #include <iomanip>
-#include "manager.h"
+#include "Manager.h"
 #include "Network.h"
 
 Manager::Manager()
@@ -243,7 +243,7 @@ void Manager::addNeuron(unsigned int layer, unsigned int number)
   for (unsigned int i(0) ; i < number ; ++i)
     _network.addNeuron(layer);
   _network.save(_gene);
-  _network.train(_gene); // Re-save score
+  train(_gene); // Re-save score
 }
 
 void Manager::liveUpdate()

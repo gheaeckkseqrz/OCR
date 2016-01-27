@@ -1,6 +1,7 @@
 #ifndef __INPUT_NEURON_H__
 #define __INPUT_NEURON_H__
 
+#include <iostream>
 #include "Neuron.h"
 class Manager;
 
