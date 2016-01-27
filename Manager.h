@@ -30,16 +30,13 @@ class Manager
   void liveUpdate();
 
   Network &getNetwork();
-  std::vector<bool> &getDataset();
-  unsigned int getFontCount() const;
-  void setFontCount(unsigned int c);
+  std::vector<unsigned int> &getDataset();
   
  private:
   Network _network;
   Gene _gene;
   bool _train;
-  std::vector<bool> _dataset;
-  unsigned int _fontsCount;
+  std::vector<unsigned int> _dataset;
   cv::Mat _image;
   std::vector<std::pair<unsigned int, std::ofstream>> _ttys;
 };

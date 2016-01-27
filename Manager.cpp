@@ -3,7 +3,7 @@
 #include "Network.h"
 
 Manager::Manager()
-  :_network(*this), _train(false), _dataset(26), _fontsCount(0)
+  :_network(*this), _train(false), _dataset(26)
 {
 }
 
@@ -94,7 +94,7 @@ void Manager::train(Gene &g)
       bitResults.push_back(0);
       if (_dataset[c - 'A'])
 	{
-	  for (unsigned int fontId(0) ; fontId < _fontsCount ; ++fontId)
+	  for (unsigned int fontId(0) ; fontId < _dataset[c - 'A'] ; ++fontId)
 	    {
 	      loadImage(c, fontId);
 	      unsigned char r = _network.getOutput();
@@ -153,39 +153,34 @@ void Manager::startTrain()
   unsigned int lastIncrease(0);
   if (_gene._weights.size() != _network.getSynapsesCount())
     _network.save(_gene);
-  while (_train && !_gene.perfect(_dataset, _fontsCount))
+  while (_train && !_gene.perfect(_dataset))
     {
       lastIncrease++;
       if (lastIncrease && lastIncrease % 25000 == 0)
       	addNeuron(1, 1);
       std::cout << "Iteration " << ++iteration << std::endl;
       Gene g = _gene;
+      float diff = _gene.getScore();
       if (evolveAndTrain(g, 1))
 	{
 	  _gene = g;
+	  _gene.saveToFile("save/iteration/" + std::to_string(iteration) + ".txt");
  	  cleanAll();
  	  liveUpdate();
 	  lastIncrease = 0;
 	}
-      float diff = g.getScore() - _gene.getScore();
-      std::cout << g.printResults(_dataset, _fontsCount, true) << " - (" << (diff > 0 ? "\033[0;32m" : "\033[0;31m") << diff << "\033[0;00m) - LastIncrease : " << lastIncrease << std::endl;
-      if (_gene.perfect(_dataset, _fontsCount))
+      diff = g.getScore() - diff;
+      std::cout << g.printResults(_dataset, true) << " - (" << (diff > 0 ? "\033[0;32m" : "\033[0;31m") << diff << "\033[0;00m) - LastIncrease : " << lastIncrease << std::endl;
+      if (_gene.perfect(_dataset))
 	{
 	  std::cout << "PERFECT" << std::endl;
-	  if (_fontsCount < 105 && std::count(_dataset.begin(), _dataset.end(), true) > _fontsCount / 2)
-	    _fontsCount++;
+	  auto minIt = std::min_element(_dataset.begin(), _dataset.end(), [] (unsigned int a , unsigned int b) -> bool { if (b && b < a) return b; return a; });
+	  auto maxIt = std::max_element(_dataset.begin(), _dataset.end());
+	  if (*minIt < 105 && *maxIt < std::count_if(_dataset.begin(), _dataset.end(), [](unsigned int a) -> bool {return (a != 0); }))
+	    *minIt += 1;
 	  else
-	    {
-	      while (std::count(_dataset.begin(), _dataset.end(), true) != _dataset.size())
-		{
-		  unsigned int randomId = std::rand() % _dataset.size();
-		  if (!_dataset[randomId])
-		    {
-		      _dataset[randomId] = true;
-		      break;
-		    }
-		}
-	    }
+	    (*std::min_element(_dataset.begin(), _dataset.end())) += 1;
+	    
 	}
     }
 }
@@ -253,7 +248,7 @@ void Manager::liveUpdate()
     {
       tty.second << "\033[2J\033[1;1H" << neuronInfo(tty.first) << std::endl;
       tty.second << "Neuron : " << tty.first << std::endl;
-      tty.second << _gene.printResults(_dataset, _fontsCount, true) << std::endl;
+      tty.second << _gene.printResults(_dataset, true) << std::endl;
     }
 }
 
@@ -268,17 +263,7 @@ Network &Manager::getNetwork()
   return _network;
 }
 
-std::vector<bool> &Manager::getDataset()
+std::vector<unsigned int> &Manager::getDataset()
 {
   return _dataset;
-}
-
-unsigned int Manager::getFontCount() const
-{
-  return _fontsCount;
-}
-
-void Manager::setFontCount(unsigned int c)
-{
-  _fontsCount = c;
 }

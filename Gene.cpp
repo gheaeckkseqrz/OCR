@@ -86,7 +86,7 @@ void Gene::setOutput(std::vector<unsigned int> const &output)
   _output = output;
 }
 
-std::string Gene::printResults(std::vector<bool> const &dataset, unsigned int fontsCount, bool color) const
+std::string Gene::printResults(std::vector<unsigned int> const &dataset, bool color) const
 {
   const char *GREEN = "\033[0;32m";
   const char *BLUE = "\033[0;34m";
@@ -98,7 +98,7 @@ std::string Gene::printResults(std::vector<bool> const &dataset, unsigned int fo
     {
       if (_fullResults.size() > c - 'A' && _bitResults.size() > c - 'A' && dataset[c - 'A'])
 	{
-	  if (_fullResults[c - 'A'] == fontsCount && color)
+	  if (_fullResults[c - 'A'] == dataset[c - 'A'] && color)
 	    ss << GREEN;
 	  else if (_fullResults[c - 'A'] > 0 && color)
 	    ss << BLUE;
@@ -147,13 +147,13 @@ void Gene::saveToFile(std::string const &path)
   out.close();
 }
 
-bool Gene::perfect(std::vector<bool> const &dataset, unsigned int fontsCount) const
+bool Gene::perfect(std::vector<unsigned int> const &dataset) const
 {
   if (dataset.size() != _fullResults.size() || dataset.empty())
     return false;
   for (unsigned int i(0) ; i < dataset.size() ; ++i)
     {
-      if (dataset[i] && _fullResults[i] != fontsCount)
+      if (dataset[i] && _fullResults[i] != dataset[i])
 	return false;
     }
   return true;

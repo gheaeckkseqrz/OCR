@@ -19,10 +19,10 @@ class Gene
   void setFullResults(std::vector<unsigned int> const &results);
   void setBitResults(std::vector<unsigned int> const &results);
   void setOutput(std::vector<unsigned int> const &output);
-  std::string printResults(std::vector<bool> const &dataset, unsigned int fontsCount, bool color = false) const;
+  std::string printResults(std::vector<unsigned int> const &dataset, bool color = false) const;
   float getScore() const;
   float getWeightsSum() const;
-  bool perfect(std::vector<bool> const &dataset, unsigned int fontsCount) const;
+  bool perfect(std::vector<unsigned int> const &dataset) const;
   bool compare(Gene const &o, unsigned int start = 0, unsigned int end = -1) const;
 
   void saveToFile(std::string const &path);

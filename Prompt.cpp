@@ -75,27 +75,24 @@ void Prompt::add(unsigned int layer, unsigned int count)
 void Prompt::dataset()
 {
   unsigned int fontCount;
-  std::vector<bool> &dataset = _manager.getDataset();
+  std::vector<unsigned int> &dataset = _manager.getDataset();
   for (char c('A') ; c <= 'Z' ; ++c)
-    std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
-  std::cout << " (" << _manager.getFontCount() << ")" << std::endl;
+    std::cout << "[" << c << " - " << dataset[c - 'A'] << "]";
+  std::cout << std::endl;
   std::string input;
   std::cout << "To add : ";
   std::getline(std::cin, input);
   for (auto c : input)
     if (c >= 'A' && c <= 'Z')
-      dataset[c - 'A'] = true;
+      dataset[c - 'A']++;
   std::cout << "To remove : ";
   std::getline(std::cin, input);
   for (auto c : input)
     if (c >= 'A' && c <= 'Z')
-      dataset[c - 'A'] = false;
-  std::cout << "Font Count : ";
-  std::cin >> fontCount;
-  _manager.setFontCount(fontCount);
+      dataset[c - 'A']--;
   for (char c('A') ; c <= 'Z' ; ++c)
-    std::cout << "[" << (dataset[c - 'A'] ? c : ' ') << "]";
-  std::cout << " (" << _manager.getFontCount() << ")" << std::endl;
+    std::cout << "[" << c << " - " << dataset[c - 'A'] << "]";
+  std::cout << std::endl;
 }
 
 void Prompt::layerDescription()
