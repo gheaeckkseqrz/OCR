@@ -14,6 +14,7 @@ class Manager
   void loadImage(char c, unsigned int fontId);
   float getPixelValue(unsigned int x, unsigned int y) const;
   void displayInput();
+  std::string neuronsInfo() const;
   std::string neuronInfo(unsigned int neuronId) const;
 
   unsigned int getMatchingBits(char c1, char c2) const;

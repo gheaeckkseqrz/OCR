@@ -6,13 +6,13 @@
 #include "InputNeuron.h"
 #include "Gene.h"
 
-const unsigned int Network::PICTURE_RESOLUTION = 8;
+const unsigned int Network::PICTURE_RESOLUTION = 32;
 
 Network::Network(Manager const &manager)
 {
   const unsigned int INPUT_NEURONS = PICTURE_RESOLUTION * PICTURE_RESOLUTION;
   const unsigned int OUTPUT_NEURONS = 8;
-  const unsigned int HIDDEN_LAYERS = 1;
+  const unsigned int HIDDEN_LAYERS = 2;
 
   _neurons.push_back(NeuronLayer()); // Input Layer
   for (unsigned int i(0) ; i < INPUT_NEURONS ; ++i)
@@ -147,6 +147,14 @@ unsigned int Network::getSynapsesCount(unsigned int layerId) const
       previousSize = l.size();
     }
   return c;
+}
+
+std::vector<unsigned int> Network::getLayerDescription() const
+{
+  std::vector<unsigned int> description;
+  for (auto l : _neurons)
+    description.push_back(l.size());
+  return description;
 }
 
 std::string Network::getDescription() const

@@ -45,6 +45,14 @@ void Manager::displayInput()
     }
 }
 
+std::string Manager::neuronsInfo() const
+{
+  std::string result;
+  for (unsigned int i(_network.getLayerDescription()[0]) ; i < _network.getNeuronsCount() ; ++i)
+    result += neuronInfo(i) + "\n";
+  return result;
+}
+
 std::string Manager::neuronInfo(unsigned int neuronId) const
 {
   std::stringstream ss;
@@ -120,13 +128,13 @@ bool Manager::evolveAndTrain(Gene &g, unsigned int layer)
 
   for (unsigned int n(0) ; n < _network.getNeuronsCount(layer) ; ++n)
     {
-      Gene g2 = g;
       start += _network.getNeuronsCount(layer - 1);
       end += _network.getNeuronsCount(layer - 1);
 
+      Gene g2 = g;
       while (g.compare(g2, start, end))
 	g2.mute(10, start, end);
-
+      
       train(g2);
       if (g2.getScore() > _gene.getScore())
 	{
@@ -135,7 +143,7 @@ bool Manager::evolveAndTrain(Gene &g, unsigned int layer)
 	}
       if (_network.getNeuronsCount(layer + 1))
 	{
-	  for (unsigned int i(0) ; i < 10 ; ++i)
+	  for (unsigned int i(0) ; i < 2 ; ++i)
 	    if (evolveAndTrain(g2, layer + 1))
 	      {
 		g = g2;

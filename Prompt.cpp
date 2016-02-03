@@ -33,6 +33,8 @@ void Prompt::run()
 	dataset();
       if (input == "neuroninfo")
 	neuronInfo();
+      if (input == "neuronsinfo")
+	std::cout << _manager.neuronsInfo() << std::endl;;
       //      if (input == "reset")
       //_manager.getEvolver().forgetBestScore();
       if (input == "displayinput")
