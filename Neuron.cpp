@@ -1,7 +1,7 @@
+#include <sstream>
 #include <iostream> // TODO : remove
 #include <cmath>
 #include "Neuron.h"
-#include "Gene.h"
 
 Neuron::Neuron()
   :_id(0), _computed(false), _value(0)
@@ -29,17 +29,27 @@ void Neuron::reset()
 
 float Neuron::getOutput()
 {
+  std::stringstream ss;
+
   if (!_computed)
     {
-      float sum(0);
+      _sum = 0;
+      ss << "Neuron " << _id << " : ";
       for (auto s : _inputs)
 	{
 	  if (s.second)
-	    sum += s.first->getOutput() * s.second;
+	    {
+	      ss << s.first->getOutput() << " * " << s.second << " + ";
+	      _sum += s.first->getOutput() * s.second;
+	    }
 	}
-      _value = 1.0 / (1.0 + exp(-sum));
+      ss << " => sig(" << _sum << ")";
+      _value = sigmoid(_sum);
+      ss << " = " << _value << std::endl;
       _computed = true;
     }
+  if (_inputs.size() < 20)
+    std::cout << ss.str();
   return _value;
 }
 
@@ -48,24 +58,34 @@ void Neuron::connectSynapse(Synapse_t const &s)
   _inputs.push_back(s);
 }
 
-void Neuron::saveWeights(Gene &gene) const
+void Neuron::adjustWeights(float diff)
 {
-  for (auto s : _inputs)
-    gene.addWeight(s.second);
+  //  std::cout << "Adjusting weights with diff = " << diff << std::endl;
+  //std::cout << "Sum : " << _sum << std::endl;
+
+  _oldInputs = _inputs;
+
+  float sigmoidPrimeValue = sigmoidPrime(_sum);
+  float sumChange = sigmoidPrimeValue * diff;
+
+  for (auto &s : _inputs)
+    s.second += sumChange /  s.second;
 }
 
-unsigned int Neuron::loadWeights(Gene const &gene, unsigned int index)
+float Neuron::sigmoid(float v)
 {
-  unsigned int i(0);
-  for (auto &s : _inputs)
-    {
-      s.second = gene.getWeight(index + i);
-      i++;
-    }
-  return index + i;
+  return 1.0 / (1.0 + exp(-v));
+}
+
+float Neuron::sigmoidPrime(float v)
+{
+  return sigmoid(v) * (1 - sigmoid(v));
 }
 
 std::ostream& operator <<(std::ostream& osObject, const Neuron& n)
 {
-  return osObject << "[" << n.getId() << "]";
+  osObject << "[" << n.getId() << "] - ";
+  for (auto i : n._inputs)
+    osObject << "[" << i.second << "]";
+  return osObject;
 }

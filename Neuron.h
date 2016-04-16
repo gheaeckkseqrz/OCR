@@ -19,14 +19,18 @@ class Neuron
   virtual float getOutput();
   void connectSynapse(Synapse_t const &s);
 
-  void saveWeights(Gene &gene) const;
-  unsigned int loadWeights(Gene const &gene, unsigned int index);
+  void adjustWeights(float diff);
 
- private:
+  float sigmoid(float v);
+  float sigmoidPrime(float v);
+
+  // private:
   unsigned int _id;
   bool _computed;
   float _value;
+  float _sum;
   std::vector<Synapse_t> _inputs;
+  std::vector<Synapse_t> _oldInputs;
 };
 
 std::ostream& operator <<(std::ostream& osObject, const Neuron& n);

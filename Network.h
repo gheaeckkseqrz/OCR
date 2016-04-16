@@ -1,10 +1,10 @@
 #ifndef __NETWORK_H__
 #define __NETWORK_H__
 
+#include <map>
 #include <vector>
 #include "Neuron.h"
 class Manager;
-class Gene;
 
 class Network
 {
@@ -12,13 +12,16 @@ class Network
   Network(Manager const &manager);
   
   Neuron *addNeuron(unsigned int layer);
+  Neuron *addOutput(std::string const &tag);
   Neuron *getNeuron(unsigned int id) const;
 
   void reset();
-  unsigned char getOutput();
+  std::map<std::string, float> getOutput();
+  void adjustWeights(std::map<std::string, std::vector<float>> const &diffs);
 
-  void save(Gene &gene);
-  void load(Gene &gene);
+  std::vector<float> computeLayer2Gradient(std::map<std::string, std::vector<float>> const &diffs);
+  std::vector<float> computeLayer1Gradient(std::map<std::string, std::vector<float>> const &diffs);
+
   unsigned int getNeuronsCount(unsigned int layerId  = -1) const;
   unsigned int getSynapsesCount(unsigned int layerId = -1) const;
   std::vector<unsigned int> getLayerDescription() const;
@@ -28,9 +31,10 @@ class Network
  public:
   static const unsigned int PICTURE_RESOLUTION;
 
- private:
+  // private:
   typedef std::vector<Neuron *> NeuronLayer;
   std::vector<NeuronLayer> _neurons;
+  std::map<std::string, Neuron*> _outputs;
 };
 
 #endif

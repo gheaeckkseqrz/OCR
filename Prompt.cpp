@@ -21,6 +21,8 @@ void Prompt::run()
 	break;
       if (input == "train")
 	train();
+      if (input == "once")
+	_manager.train();
       //      if (input == "result")
       //	std::cout << _manager.getEvolver().getBestGene().printResults(_manager.getDataset(), true) << std::endl;
       if (input == "add")
@@ -43,8 +45,8 @@ void Prompt::run()
 	loadImage();
       if (input == "tty")
 	tty();
-      if (input == "cleanNeuron")
-	cleanNeuron();
+      if (input == "savefeatures")
+	_manager.savefeatures();
     }
 }
 
@@ -57,7 +59,7 @@ void Prompt::train()
   t.join();  
 }
 
-void Prompt::add(unsigned int layer, unsigned int count)
+void Prompt::add(unsigned int layer,  unsigned int count)
 {
   unsigned int l(layer);
   unsigned int c(count);
@@ -136,12 +138,4 @@ void Prompt::tty()
   std::cout << "TTY : ";
   std::cin >> tty;
   _manager.registerLiveUpdate(neuronId, tty);
-}
-
-void Prompt::cleanNeuron()
-{
-  unsigned int neuronId;
-  std::cout << "NeuronId : ";
-  std::cin >> neuronId;
-  _manager.cleanNeuron(neuronId);
 }

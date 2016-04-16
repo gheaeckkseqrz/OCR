@@ -3,7 +3,6 @@
 
 #include <fstream>
 #include <opencv2/opencv.hpp>
-#include "Gene.h"
 #include "Network.h"
 
 class Manager
@@ -14,17 +13,15 @@ class Manager
   void loadImage(char c, unsigned int fontId);
   float getPixelValue(unsigned int x, unsigned int y) const;
   void displayInput();
+  void savefeatures();
   std::string neuronsInfo() const;
   std::string neuronInfo(unsigned int neuronId) const;
 
-  unsigned int getMatchingBits(char c1, char c2) const;
-
-  void train(Gene &g);
-  bool evolveAndTrain(Gene & g, unsigned int layer = 1);
+  void train();
   void startTrain();
   void stopTrain();
-  void cleanNeuron(unsigned int neuronId);
-  void cleanAll();
+
+  std::vector<float> expectedOutput(unsigned char c);
   
   void addNeuron(unsigned int layer, unsigned int number = 1);
   void registerLiveUpdate(unsigned int neuronId, std::string const &tty);
@@ -35,7 +32,6 @@ class Manager
   
  private:
   Network _network;
-  Gene _gene;
   bool _train;
   std::vector<unsigned int> _dataset;
   cv::Mat _image;

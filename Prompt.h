@@ -16,7 +16,6 @@ class Prompt
   void neuronInfo();
   void loadImage();
   void tty();
-  void cleanNeuron();
 
  private:
   Manager &_manager;
