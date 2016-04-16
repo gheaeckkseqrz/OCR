@@ -111,7 +111,7 @@ std::map<std::string, float> Network::getOutput()
   return results;
 }
 
-void Network::adjustWeights(std::map<std::string, std::vector<float>> const &diffs)
+void Network::adjustWeights(std::map<std::string, float> const &diffs)
 {
   std::vector<float> layer2gradient = computeLayer2Gradient(diffs);
   std::vector<float> layer1gradient = computeLayer1Gradient(diffs);
@@ -121,8 +121,6 @@ void Network::adjustWeights(std::map<std::string, std::vector<float>> const &dif
   for (auto n : diffs)
     {
       Neuron *neu = _outputs[n.first];
-      float deltaoutputsum = neu->sigmoidPrime(neu->_sum) * n.second[0];
-      //      std::cout << "Delta Output Sum : " << neu->sigmoidPrime(neu->_sum) << " * " << n.second[0] << " => " << deltaoutputsum << std::endl; 
       for (auto &w2 : neu->_inputs)
 	{
 	  w2.second += (layer2gradient[i] > 0 ? 0.01 : -0.01) * w2.first->getOutput();
@@ -136,7 +134,7 @@ void Network::adjustWeights(std::map<std::string, std::vector<float>> const &dif
     }
 }
 
-std::vector<float> Network::computeLayer2Gradient(std::map<std::string, std::vector<float>> const &diffs)
+std::vector<float> Network::computeLayer2Gradient(std::map<std::string, float> const &diffs)
 {
   std::vector<float> gradient;
   int i(0);
@@ -145,7 +143,7 @@ std::vector<float> Network::computeLayer2Gradient(std::map<std::string, std::vec
     {
       for (auto w : o.second->_inputs)
 	{
-	  float derivative = o.second->sigmoidPrime(o.second->_sum) * diffs.at(o.first)[0];
+	  float derivative = o.second->sigmoidPrime(o.second->_sum) * diffs.at(o.first);
 	  //	  std::cout << "Derivative[" << o.second->_id << "/" << w.first->_id << "] = " << o.second->sigmoidPrime(o.second->_sum) << " * " << diffs.at(o.first)[0] << " => " << derivative << std::endl;
 	  i++;
 	  gradient.push_back(derivative);
@@ -154,7 +152,7 @@ std::vector<float> Network::computeLayer2Gradient(std::map<std::string, std::vec
   return gradient;
 }
 
-std::vector<float> Network::computeLayer1Gradient(std::map<std::string, std::vector<float>> const &diffs)
+std::vector<float> Network::computeLayer1Gradient(std::map<std::string, float> const &diffs)
 {
   std::vector<float> gradient;
 
@@ -164,7 +162,7 @@ std::vector<float> Network::computeLayer1Gradient(std::map<std::string, std::vec
 	{
 	  for (auto w : w2.first->_inputs)
 	    {
-	      float derivative = diffs.at(o.first)[0] * -1 * _outputs["Output"]->sigmoidPrime(_outputs["Output"]->_sum) * w2.first->sigmoidPrime(w2.first->_sum) * w.first->getOutput() * w.second;
+	      float derivative = diffs.at(o.first) * -1 * _outputs["Output"]->sigmoidPrime(_outputs["Output"]->_sum) * w2.first->sigmoidPrime(w2.first->_sum) * w.first->getOutput() * w.second;
 	      //	      std::cout << "Derivative[" << w2.first->_id << "/" << w.first->_id << "] = " << diffs.at(o.first)[0] << " * -1 * " << _outputs["Output"]->sigmoidPrime(_outputs["Output"]->_sum) << " * " <<  w2.first->sigmoidPrime(w2.first->_sum) << " * " <<  w.first->getOutput() << " * " <<  w.second << " => " << derivative << std::endl;
 	      gradient.push_back(derivative);
 	    }

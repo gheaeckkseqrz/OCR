@@ -94,9 +94,9 @@ void Manager::train()
   loadImage(r % 2 ? 'A' : 'B', std::rand() % 100);
     
   auto o = _network.getOutput();
-  std::map<std::string, std::vector<float>> expected;
-  expected["Output"] = std::vector<float>();
-  expected["Output"].push_back((r % 2 ? .95 : .05) - o["Output"]);
+  std::map<std::string, float> expected;
+  expected["Output"] = 0;
+  expected["Output"] += (r % 2 ? .95 : .05) - o["Output"];
   _network.adjustWeights(expected);
 
 //    ((InputNeuron*)(_network._neurons[0][0]))->_retvalue = 0;
@@ -142,7 +142,7 @@ void Manager::train()
 	      std::cout << " => " << cost << std::endl;
 	      std::cout << std::endl;
 
-	      _network.adjustWeights(data);
+	      //	      _network.adjustWeights(data);
 	    }
 	}
     }

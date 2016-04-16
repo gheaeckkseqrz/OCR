@@ -17,10 +17,10 @@ class Network
 
   void reset();
   std::map<std::string, float> getOutput();
-  void adjustWeights(std::map<std::string, std::vector<float>> const &diffs);
+  void adjustWeights(std::map<std::string, float> const &diffs);
 
-  std::vector<float> computeLayer2Gradient(std::map<std::string, std::vector<float>> const &diffs);
-  std::vector<float> computeLayer1Gradient(std::map<std::string, std::vector<float>> const &diffs);
+  std::vector<float> computeLayer2Gradient(std::map<std::string, float> const &diffs);
+  std::vector<float> computeLayer1Gradient(std::map<std::string, float> const &diffs);
 
   unsigned int getNeuronsCount(unsigned int layerId  = -1) const;
   unsigned int getSynapsesCount(unsigned int layerId = -1) const;
